@@ -1013,6 +1013,341 @@
               </b-sidebar>
             </b-tab>
             
+
+            <b-tab title="NinjaChat" class="w-100" @click="resetDates('ninjachat')">
+                <!-- Ninjaseo Header -->
+                <div class="row mx-0">
+                  <div class="bg-light col-12 d-md-block d-lg-flex d-block justify-content-between px-3 padding-20 align-items-center">
+                    <h2 class="font-weight-bold mb-0 text-nowrap">NinjaChat Reports</h2>
+                    <div class="d-lg-flex d-md-flex d-block py-2">
+                      <div class="my-1 width_330 text-lg-right">
+                        <b-form-group
+                          label-cols-lg="2"
+                          content-cols-lg="10"
+                          content-cols="12"
+                          label-class="text-lg-right text-left"
+                          content-class="px-0"
+                          content-cols-md="12"
+                          class="px-md-1 mb-0"
+                          id="input-group-1"
+                          label="From"
+                          label-for="input-5"
+                          class="mb-0"
+                        >
+                          <b-form-datepicker id="input-5-analytic" class="border" v-model="fromDate" locale="en" @input="dateSelected()" type="date" required placeholder="From date"></b-form-datepicker>
+                        </b-form-group>
+                      </div>
+                      <div class="ml-lg-n4 ml-md-n2 my-1 pl-md-1 width_330">
+                        <b-form-group
+                          label-class="text-lg-right text-left"
+                          content-class="px-0"
+                          label-cols-lg="2"
+                          content-cols="12"
+                          content-cols-lg="10"
+                          content-cols-md="12"
+                          class="px-md-1 mb-0"
+                          id="input-group-2"
+                          label="To"
+                          label-for="input-5"
+                          class="mb-0"
+                        >
+                          <b-form-datepicker
+                            id="input-end-date-analytic"
+                            class="border"
+                            v-model="toDate"
+                            :min="fromDate"
+                            locale="en"
+                            @input="showSEOReports()"
+                            type="date"
+                            :max="maxDate"
+                            required
+                            placeholder="To date"
+                            :disabled="!fromDate"
+                          >
+                          </b-form-datepicker>
+                        </b-form-group>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Ninjaseo Graphs -->
+                <div>
+                  <div class="row mx-0 mx-lg-3">
+                    <b-col v-if="emptyState" class="col-12 col-md-12 col-12 pr-5 text-center min-height-60vh">
+                      <img width="320" class="pt-6" src="https://infinity.500apps.com/img/empty-states/projectsly/no-reports.svg" />
+                      <h3 class="font-weight-bold pt-4 mb-2" style="font-size: 20px">No data available</h3>
+                      <p style="font-size: 16px">Kindly change the date range and try again</p>
+                    </b-col>
+  
+                    <b-col lg="6" md="12" v-if="!hidePageGrader" class="py-lg-5 py-3 px-0 min-height-60vh">
+                      <figure class="highcharts-figure">
+                        <div id="container-pie-ninjaseo-page_grader"></div>
+                      </figure>
+                    </b-col>
+                    <b-col lg="6" v-if="!hideLinkTracking" class="py-lg-5 py-3 px-0 min-height-60vh">
+                      <figure class="highcharts-figure">
+                        <div id="container-pie-ninjaseo-link_tracking"></div>
+                      </figure>
+                    </b-col>
+                    <b-col lg="12" v-if="!hideRankings" class="py-lg-5 py-3 px-0 min-height-60vh">
+                      <figure class="highcharts-figure">
+                        <div id="container-pie-ninjaseo-rankings"></div>
+                        <div class="border rounded">
+                         
+                          <b-row class="pr-2 pt-4" v-if="RankingsDomainCount">
+                            <b-col lg="3" class="text-center">
+                              <h4>Unique Keyword Count</h4>
+                              <p class="h2">{{RankingsKeywordCount}}</p>
+                            </b-col>
+                            <b-col lg="3" class="text-center">
+                              <h4>Domain Count</h4>
+                              <p class="h2">{{RankingsDomainCount}}</p>
+                            </b-col>
+                            <b-col lg="3" class="text-center">
+                              <h4>Position Rank Below 100</h4>
+                              <p class="h2">{{`${seoStatistics.below_100.length}(${getPercentage(seoStatistics.below_100)}%)`}}</p>
+                            </b-col>
+                            <b-col lg="3" class="text-center">
+                              <h4>Position Rank Below 50</h4>
+                              <p class="h2">{{`${seoStatistics.below_50.length}(${getPercentage(seoStatistics.below_50)}%)`}}</p>
+                            </b-col>
+                            <b-col lg="3" class="text-center">
+                              <h4>Position Rank Below 25</h4>
+                              <p class="h2">{{`${seoStatistics.below_25.length}(${getPercentage(seoStatistics.below_25)}%)`}}</p>
+                            </b-col>
+                            <b-col lg="3" class="text-center">
+                              <h4>Position Rank Below 10</h4>
+                              <p class="h2">{{`${seoStatistics.below_10.length}(${getPercentage(seoStatistics.below_10)}%)`}}</p>
+                            </b-col>
+                            <b-col lg="3" class="text-center">
+                              <h4>Position Rank Below 5</h4>
+                              <p class="h2">{{`${seoStatistics.below_5.length}(${getPercentage(seoStatistics.below_5)}%)`}}</p>
+                            </b-col>
+                          </b-row>
+                          <b-row v-else class="text-center">
+                            <b-col class="m-5"> <b-spinner variant="primary"></b-spinner></b-col>
+                          </b-row>
+                        </div>
+                      </figure>
+                    </b-col>
+                  </div>
+                </div>
+                <!-- Ninjaseo Table -->
+                <div>
+                  <b-tabs>
+                    <b-tab :title="app.text" v-for="app in ninjaSEOList">
+                      <div v-if="seoTableData[app.value] && seoTableData[app.value].length">
+                        <div class="d-flex justify-content-end my-3">
+                        <b-button :variant="!accordionVisible[app.value]?'primary':'secondary'" @click="accordionVisible[app.value]=!accordionVisible[app.value]">
+                          Toggle accrodions
+                        </b-button>
+                        </div>
+                        <div v-for="item in seoTableData[app.value]">
+                          <div>
+                            <b-card-header header-tag="header" class="p-0 height-50" role="tab">
+                              <b-button v-b-toggle="`collapse-${item[0].id}`" variant="white" class="text-left"><img :src="getAppLogo(app.value, item[0])" class="rounded-circle" width="30" height="30" /> {{getAppName(app.value, item[0])}}</b-button>
+                            </b-card-header>
+                            <div>
+                              <b-collapse :id="`collapse-${item[0].id}`" :visible="accordionVisible[app.value]">
+                                <b-table striped hover :fields="getTableFields(app.value)" :items="item" class="table-sm">
+                                  <template #cell(is_success)="data">
+                                    {{ data.value ? JSON.parse(data.value).length + "/" + (parseInt(JSON.parse(data.value).length) + parseInt(JSON.parse(data.item.is_failure).length)) : "--" }}
+                                  </template>
+                                  <template #cell(history)="data">
+                                    <b-link @click="showHistory(data.item)" v-b-toggle.history_sidebar>History</b-link>
+                                  </template>
+                                  <template #cell(created_date)="data">
+                                    {{moment(data.value).fromNow()}}
+                                  </template>
+                                  <template #cell(updated_date)="data">
+                                    {{moment(data.value).fromNow()}}
+                                  </template>
+                                  <template #cell(position_url)="data">
+                                    {{data.value || '--'}}
+                                  </template>
+                                  <template #cell(keyword_position)="data">
+                                    {{data.value || '--'}}
+                                    <span v-if="positionStatus(data.item) && positionStatus(data.item).search('increased') !== -1">
+                                      (<span class="fe fe-arrow-up text-success" :id="'increased-tooltip-' + data.item.id"
+                                        >{{ positionStatus(data.item).split(" ")[2] }}<b-tooltip :target="'increased-tooltip-' + data.item.id" triggers="hover">
+                                          <span class="fe fe-arrow-up text-success"></span>{{ positionStatus(data.item) }}
+                                        </b-tooltip></span
+                                      >)
+                                    </span>
+                                    <span v-else-if="positionStatus(data.item) && positionStatus(data.item).search('increased') !== -1">
+                                      (<span class="fe fe-arrow-down text-danger" :id="'decreased-tooltip-' + data.item.id"
+                                        >{{ positionStatus(data.item).split(" ")[2] }}<b-tooltip :target="'decreased-tooltip-' + data.item.id" triggers="hover">
+                                          <span class="fe fe-arrow-down text-danger"></span>{{ positionStatus(data.item) }}
+                                        </b-tooltip></span
+                                      >)
+                                    </span>
+                                  </template>
+                                  <template #cell(payment_amount)="data">
+                                    {{data.value || '--'}}
+                                  </template>
+                                  <template #cell(notes)="data">
+                                    <b-link @click="showHistory(data.item, 'notes')" v-b-toggle.history_sidebar>Notes</b-link>
+                                  </template>
+                                  <template #cell(activity)="data">
+                                    <b-link @click="showHistory(data.item, 'activities')" v-b-toggle.history_sidebar>Activities</b-link>
+                                  </template>
+                                </b-table>
+                              </b-collapse>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <b-card v-else>
+                        <h1>Please try with different dates</h1>
+                      </b-card>
+                    </b-tab>
+                  </b-tabs>
+                </div>
+                <b-overlay :show="isBusy || loadContentData " no-wrap opacity="0.5" spinner-variant="primary"></b-overlay>
+                <b-sidebar
+                  id="history_sidebar"
+                  :title="seoPageType==='link_tracking'?'Link Trackings': 'Keyword History'"
+                  width="40%"
+                  sidebar-class="border-left "
+                  right
+                  shadow
+                  body-class="bg-soft-light"
+                  header-class="bg-white border-bottom d-flex flex-row-reverse justify-content-between  close-btn-right"
+                  responsive
+                  :lazy="true"
+                  @hidden="resetHistory()"
+                >
+                  <div v-if="pageGraderHistory.length && seoPageType==='page_grader'">
+                    <b-card no-body v-for="(history, index) in pageGraderHistory" :key="index" class="shadow-none mb-3">
+                      <b-card-header>
+                        <p class="mb-0 text-truncate">
+                          {{ history.link_url }}/{{ history.keyword }} -
+                        </p>
+                        <span :id="'score-tooltip-' + history.id" :class="history.score < 50 ? 'text-danger' : history.score < 90 ? 'text-warning' : 'text-success'">{{ history.score }}</span>
+                        <p class="mb-0 ml-2 text-right">
+                          {{moment(history.created_date).fromNow()}}
+                        </p>
+                      </b-card-header>
+                      <b-card-body>
+                        <div>
+                          <b-button block v-b-toggle="`rules-success-${index}`" variant="white" class="block mb-2"><span class="text-success"> Success</span></b-button>
+                          <b-collapse :id="'rules-success-'+index" accordion="my-accordion-1" role="tabpanel">
+                            <div class="list-group my-3">
+                              <div class="list-group-item" v-for="item in JSON.parse(history.is_success)">{{item.message}}</div>
+                            </div>
+                          </b-collapse>
+                        </div>
+                        <div>
+                          <b-button block v-b-toggle="`rules-failure-${index}`" variant="white" class="block"><span class="text-danger">Failure</span></b-button>
+                          <b-collapse :id="'rules-failure-'+index" accordion="my-accordion-2" role="tabpanel">
+                            <div class="list-group my-3">
+                              <div class="list-group-item" v-for="item in JSON.parse(history.is_failure)">{{item.message}}</div>
+                            </div>
+                          </b-collapse>
+                        </div>
+                      </b-card-body>
+                    </b-card>
+                  </div>
+                  <div v-else-if="rankingHistory.id && seoPageType==='rankings'">
+                    <div>
+                      <b-card class="shadow-none">
+                        <div class="list-group list-group-flush my-n3">
+                          <div class="list-group-item py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <p class="mb-0 text-muted small">URL</p>
+                              <p class="mb-0 small">
+                                <b-link :href="rankingHistory.url" target="_blank"> {{ rankingHistory.url }}</b-link>
+                              </p>
+                            </div>
+                          </div>
+                          <div class="list-group-item py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <p class="mb-0 text-muted small">Keyword</p>
+                              <p class="mb-0 small">{{ rankingHistory.keywords }}</p>
+                            </div>
+                          </div>
+                          <div class="list-group-item py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <p class="mb-0 text-muted small">Country</p>
+                              <p class="mb-0 small">
+                                <country-flag :id="`country-${rankingHistory.country}`" :country="rankingHistory.country" size="small" /><span :id="`country-${rankingHistory.country}`" class="ml-2"
+                                  >{{ regionNames.of(rankingHistory.country) }}</span
+                                >
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </b-card>
+                    </div>
+                    <div class="list-group list-group-flush list-group-activity my-n3 crm-activity-timeline max-height-550 overflow-onhover">
+                      <div class="list-group-item" v-for="item in JSON.parse(rankingHistory.history)">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <div class="avatar-sm">
+                              <div class="avatar-title font-size-lg bg-primary-soft rounded-circle text-primary">
+                                <i class="fe fe-award"></i>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col ml-n3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex">
+                                <p class="mb-0 text-muted">Position</p>
+                                <p class="mb-0 ml-2">
+                                  <span class="badge badge-soft-warning small"> {{item.history}}</span>
+                                </p>
+                                <p class="mb-0 ml-2 font-size-base">
+                                  {{moment(moment .utc(item.updated_date) .local() .format('YYYY-MM-DD HH:mm:ss')).fromNow()}}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else-if="linkTrackingNotes.length">
+                    <b-card class="shadow-none">
+                      <div class="bg-soft-light w-100 p-3 rounded mb-3" v-for="(note,index) in linkTrackingNotes" :key="index">
+                        <p v-html="note.note" class="mb-0 p-mb-0"></p>
+                      </div>
+                    </b-card>
+                  </div>
+                  <div v-else-if="linkTrackingActivities.length">
+                    <div class="list-group list-group-flush list-group-activity my-n3 crm-activity-timeline max-height-550 overflow-onhover">
+                      <div class="list-group-item" v-for="(activity, index) in linkTrackingActivities" :key="index">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <div class="avatar-sm">
+                              <div class="avatar-title font-size-lg bg-primary-soft rounded-circle text-primary">
+                                <i class="fe fe-award"></i>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col ml-n3">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex">
+                                <p class="mb-0 text-body">{{activity.activity}}</p>
+  
+                                <p class="mb-0 ml-2 font-size-base">
+                                  {{moment(activity.created_date).fromNow()}}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else class="text-center">
+                    <!-- {{seoPageType==='link_tracking'?"No Data Available":"No History"}} -->
+                    <img width="250" class="pt-2" src="https://infinity.500apps.com/img/empty-states/projectsly/no-reports.svg" />
+                    <h3 class="font-weight-bold pt-4 mb-2" style="font-size: 20px">No Data Available</h3>
+                    <p style="font-size: 16px">Kindly change the date range and try again</p>
+                  </div>
+                </b-sidebar>
+              </b-tab>
+
           </b-tabs>
         </div>
       </div>

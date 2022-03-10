@@ -1807,7 +1807,6 @@
             this.toDate = new Date();
             let minDate = new Date(this.toDate);
             this.fromDate = moment(new Date(minDate.setDate(minDate.getDate() - 7))).format("YYYY-MM-DD");
-            console.log("TYPEE",type)
             if (type == "analytics") {
               this.generateBarAnalytics();
               this.tabType = "analytics";
@@ -2017,7 +2016,6 @@
             });
           },
           generateReportByType(type, data, count) {
-              console.log("type",type,data,count)
             const self = this;
             if (type == "browser_type" && !count) this.hideBrowserReport = true;
             else if (type == "device_type" && !count) this.hideDeviceReport = true;
@@ -2732,7 +2730,6 @@
               });
           },
           getSEOTableData(app_name, domain) {
-            console.log("getSEOTable", app_name, domain);
             let restDomain;
             let token;
             window.location.href.includes("env=dev")
@@ -2748,7 +2745,6 @@
               restDomain = `v2/ninjaseo/domain/link_trackings?${this.timeFormat()} and site_url='${domain}'`;
             }
             let host_name = window.location.href.includes("env=dev") ? "https://api.dev.500apps.com" : "https://api.ap1.500apps.com"; //Set host
-            console.log("restDomain", restDomain);
             fetch(`${host_name}/${restDomain}`, {
               method: "GET",
               headers: {
@@ -2809,7 +2805,6 @@
               });
           },
           getTableFields(app_name) {
-              console.log("app_name",app_name)
             self = this;
             if (app_name === "page_grader") return self.pageGraderFields;
             else if (app_name === "rankings") return self.rankingsFields;
@@ -3005,7 +3000,6 @@
             self.hideDepartments= false,
          self.hideAgents= false,
           self.hideMissedChats= false,
-            console.log("ninjachat",self.ninjaChatList)
               self.ninjaChatList.map((content_type, index) => {
                 let restDomain;
                 let token;
@@ -3058,9 +3052,7 @@
                     });
                     var reportData = { totalSignupCount: totalSignupCount, reportData: dataSet };
                     self.generateReportByType(`ninjachat-${content_type.value}`, reportData, totalSignupCount);
-                    console.log("ninjachatfdsgg",self.ninjaChatList)
                     dataSet.forEach(async (item) => {
-                      console.log("item",item)
                      await self.getNinjachatTableData(content_type.value, item,item.name);
                     });
                   });
@@ -3073,7 +3065,6 @@
        * @param {string} chatInfo To get the respective chat history
        */
        async chatTranscript(chatInfo) {
-         console.log("chatINFO",chatInfo)
         setTimeout(() => {
           this.$root.$emit("bv::toggle::collapse", `transcript_slideout-${chatInfo.contact_id}`);
         }, 200);
@@ -3104,7 +3095,6 @@
        * @param {String} type type selected(prev/next)
        */
        async changeChatTranscripts(chatInfo, type,chats) {
-         console.log("change",chats)
         var data = chats[0].filter((item) => {
           return item.id == chatInfo.id;
         });
@@ -3115,10 +3105,9 @@
         this.disabledNext = false;
         this.disabledPrev = false;
         this.chatInfo = chats[0][row_index];
-        console.log("chatInfo",this.chatInfo)
       },
 
-        // Get device type and browser of read recipient
+    // Get device type and browser of read recipient
     getBrowserType(device_type) {
       if (device_type == "Chrome" ){
         return "https://infinity.500apps.com/img/chrome.png"
@@ -3142,18 +3131,9 @@
       }
     },
     getCountry(device_type){
-     console.log("device",device_type)
      if(device_type=="India"){
        return "india-flag.svg"
      }
-    },
-
-    getDepartments(departments){
-      var data = departments.forEach((department)=>{
-        return department
-      })
-      console.log("data",data)
-      return data
     },
 
       /**
@@ -3162,7 +3142,6 @@
        * @param {string} chatInfo To get the respective chat history
        */
        async showFeedback(chatInfo) {
-        console.log("chatInfo",chatInfo)
         setTimeout(() => {
           this.$root.$emit("bv::toggle::collapse", `feedback_slideout-${chatInfo.contact_id}`);
         }, 400);
@@ -3173,7 +3152,6 @@
            async getNinjachatTableData(app_name, domain,name) {
             this.ninjaChatList[2].text=""
             if(app_name=="agents") return;
-            console.log("getNinjachat", app_name, domain);
             let restDomain;
             let token;
             window.location.href.includes("env=dev")
@@ -3188,7 +3166,6 @@
               restDomain = `v2/ninjachat/domain/agent_contact_details?${this.timeFormat()}and department_id like '${domain.data.department_id}%'`;
             }
             let host_name = window.location.href.includes("env=dev") ? "https://api.dev.500apps.com" : "https://api.ap1.500apps.com"; //Set host
-            console.log("restDomain", restDomain);
             fetch(`${host_name}/${restDomain}`, {
               method: "GET",
               headers: {
@@ -3206,7 +3183,6 @@
                 data['duration']=data
                 data['show_name']=name
                 this.ninjachatTableData[app_name].push(data);
-                console.log("ninjachat",this.ninjachatTableData[app_name])
               });
           },
 

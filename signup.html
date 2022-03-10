@@ -1244,8 +1244,8 @@
                                   <template #cell(client_name)="data">
                                     {{ data.value ? data.value :"N/A" }}
                                   </template>
-                                  <template #cell(message)="data">
-                                    <div v-if="data.item.chat_history">
+                                  <template #cell(show_message)="data">
+                                    <div v-if="data.show_message">
                                     {{ JSON.parse(data.item.chat_history)[0].to.message.replace(regex,"") }}
                                   </div>
                                   </div>
@@ -1267,10 +1267,12 @@
                                
                                   <template #cell(response)="data">
                                     <div class="d-flex cursor-pointer option-icons mt-n1 mt-lg-0" v-b-tooltip.hover title="Feedback" v-if="data.item.response" @click="showFeedback(data.item)">
-                                      <b-img src="https://infinity.500apps.com/img/forms" class="img-fluid" alt="..." width="20" height="20"></b-img> </div>
+                                      <b-img src="https://infinity.500apps.com/img/forms/list.png" class="img-fluid" alt="..." width="20" height="20"></b-img> </div>
+                                      <div v-else>--</div>
                                   </template>
                                   <template #cell(tag_name)="data">
-                                    {{ data.value }}
+                                    <div v-if="data.value">{{ data.value }}</div>
+                                    <div v-else>--</div>
                                   </template>
                                   <template #cell(created_date)="data">
                                     {{moment(data.value).fromNow()}}
@@ -1704,7 +1706,7 @@
           ],
           chatFields: [
           { key: "client_name", label: "Name" },
-          { key: "message", label: "Message" },
+          { key: "show_message", label: "Message" },
           { key: "lines", label: "No.of lines" },
           { key: "duration", label: "Duration" },
           { key: "closed_by", label: "Closed By" },
@@ -3199,7 +3201,7 @@
                 return response.json();
               })
               .then((data) => {
-                data['message'] = data;
+                data['show_message'] = data;
                 data['lines']=data
                 data['duration']=data
                 data['show_name']=name

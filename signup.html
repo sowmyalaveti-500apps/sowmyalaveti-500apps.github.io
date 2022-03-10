@@ -1024,6 +1024,96 @@
                 </div>
               </b-sidebar>
             </b-tab>
+
+
+
+            <b-tab title="Outreachly" class="w-100" @click="resetDates('outreachly')">
+              <!-- Outreachly Header -->
+              <div class="row mx-0">
+                <div class="bg-light col-12 d-md-block d-lg-flex d-block justify-content-between px-3 padding-20 align-items-center">
+                  <h2 class="font-weight-bold mb-0 text-nowrap">Outreachly Reports</h2>
+                  <div class="d-lg-flex d-md-flex d-block py-2">
+                    <div class="my-1 width_330 text-lg-right">
+                      <b-form-group
+                        label-cols-lg="2"
+                        content-cols-lg="10"
+                        content-cols="12"
+                        label-class="text-lg-right text-left"
+                        content-class="px-0"
+                        content-cols-md="12"
+                        class="px-md-1 mb-0"
+                        id="input-group-1"
+                        label="From"
+                        label-for="input-5"
+                        class="mb-0"
+                      >
+                        <b-form-datepicker id="input-5-analytic" class="border" v-model="fromDate" locale="en" @input="dateSelected()" type="date" required placeholder="From date"></b-form-datepicker>
+                      </b-form-group>
+                    </div>
+                    <div class="ml-lg-n4 ml-md-n2 my-1 pl-md-1 width_330">
+                      <b-form-group
+                        label-class="text-lg-right text-left"
+                        content-class="px-0"
+                        label-cols-lg="2"
+                        content-cols="12"
+                        content-cols-lg="10"
+                        content-cols-md="12"
+                        class="px-md-1 mb-0"
+                        id="input-group-2"
+                        label="To"
+                        label-for="input-5"
+                        class="mb-0"
+                      >
+                        <b-form-datepicker
+                          id="input-end-date-analytic"
+                          class="border"
+                          v-model="toDate"
+                          :min="fromDate"
+                          locale="en"
+                          @input="showOutreachlyReports()"
+                          type="date"
+                          :max="maxDate"
+                          required
+                          placeholder="To date"
+                          :disabled="!fromDate"
+                        >
+                        </b-form-datepicker>
+                      </b-form-group>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Outreachly Graphs -->
+              <div>
+                <div class="row mx-0 mx-lg-3">
+                  <b-col v-if="hideTotalProspects" class="col-12 col-md-12 col-12 pr-5 text-center min-height-60vh">
+                    <img width="320" class="pt-6" src="https://infinity.500apps.com/img/empty-states/projectsly/no-reports.svg" />
+                    <h3 class="font-weight-bold pt-4 mb-2" style="font-size: 20px">No data available</h3>
+                    <p style="font-size: 16px">Kindly change the date range and try again</p>
+                  </b-col>
+                  <b-col lg="6" md="12" v-if="!hideTotalProspects" class="py-lg-5 py-3 px-0 min-height-60vh">
+                    <figure class="highcharts-figure">
+                      <div id="container-line-outreachly-total_prospects"></div>
+                    </figure>
+                  </b-col>
+                 <b-col lg="6" v-if="!hideTotalTasks" class="py-lg-5 py-3 px-0 min-height-60vh">
+                    <figure class="highcharts-figure">
+                      <div id="container-line-outreachly-total_tasks"></div>
+                    </figure>
+                  </b-col>
+                   <b-col lg="6" v-if="!hideTotalCalls" class="py-lg-5 py-3 px-0 min-height-60vh">
+                    <figure class="highcharts-figure">
+                      <div id="container-line-outreachly-total_calls"></div>
+                    </figure>
+                  </b-col>
+                   <b-col lg="6" v-if="!hideTotalEmails" class="py-lg-5 py-3 px-0 min-height-60vh">
+                    <figure class="highcharts-figure">
+                      <div id="container-line-outreachly-total_emails"></div>
+                    </figure>
+                  </b-col>
+                </div>
+              </div>
+            </b-tab>
             
 
             <b-tab title="NinjaChat" class="w-100" @click="resetDates('ninjachat')">
@@ -1112,8 +1202,17 @@
                 <div>
                   <b-tabs>
                     <b-tab :title="app.text" v-for="app in ninjaChatList">
+                      <div class="d-flex justify-content-end my-3">
+                        <b-button :variant="!accordionVisible[app.value]?'primary':'secondary'" @click="accordionVisible[app.value]=!accordionVisible[app.value]">
+                          Toggle accrodions
+                        </b-button>
+                        </div>
                           <div v-for="item in ninjachatTableData[app.value]">
+                            <b-card-header header-tag="header" class="p-0 height-50" role="tab">
+                              <b-button v-b-toggle="`collapse-${item[0].id}`" variant="white" class="text-left">{{item.show_name}}</b-button>
+                            </b-card-header>
                             <div>
+                              <b-collapse :id="`collapse-${item[0].id}`" :visible="accordionVisible[app.value]">
                                 <b-table  striped hover :fields="getTableFields(app.value)" :items="item" class="table-sm">
                                   <template #cell(name)="data">
                                     {{ data.value ? data.value : "N/A"}}
@@ -1146,7 +1245,9 @@
                                     {{ data.value ? data.value :"N/A" }}
                                   </template>
                                   <template #cell(message)="data">
+                                    <div v-if="data.item.chat_history">
                                     {{ JSON.parse(data.item.chat_history)[0].to.message.replace(regex,"") }}
+                                  </div>
                                   </div>
                                   </template>
                                   <template #cell(lines)="data">
@@ -1160,14 +1261,13 @@
                                   </template>
                                 
                                     <template #cell(chat_history)="data">
-                                      <div class="d-flex cursor-pointer option-icons mt-n1 mt-lg-0" v-b-tooltip.hover title="Full Chat Transcript" @click="chatTranscript(data.item)">transcript
+                                      <div class="d-flex cursor-pointer mt-n1 mt-lg-0" v-b-tooltip.hover title="Full Chat Transcript" @click="chatTranscript(data.item)"><b-img src="https://infinity.500apps.com/img/forms/list.png" class="img-fluid" alt="..." width="20" height="20"></b-img>
                                       </div>
                                     </template>
                                
                                   <template #cell(response)="data">
-
                                     <div class="d-flex cursor-pointer option-icons mt-n1 mt-lg-0" v-b-tooltip.hover title="Feedback" v-if="data.item.response" @click="showFeedback(data.item)">
-                                    Feedback</div>
+                                      <b-img src="https://infinity.500apps.com/img/forms" class="img-fluid" alt="..." width="20" height="20"></b-img> </div>
                                   </template>
                                   <template #cell(tag_name)="data">
                                     {{ data.value }}
@@ -1176,6 +1276,7 @@
                                     {{moment(data.value).fromNow()}}
                                   </template>
                                 </b-table>
+                              </b-collapse>
                             </div>
                           </div>
                         </div>
@@ -1338,9 +1439,9 @@
                                      Duration 
                                   </h5>
                                 </div>
-                                <!-- <div class="col-auto">
-                                  <small class="small text-muted"> {{ getMessageDuration(JSON.parse(chatInfo.chat_history)) }} </small>
-                                </div> -->
+                                <div class="col-auto">
+                                  <small class="small text-muted"> {{ getMessageDuration(chatInfo.chat_history) }} </small>
+                                </div>
                               </div>
                             </div> 
               
@@ -1553,6 +1654,12 @@
             { value: "rankings", text: "Rankings" },
             { value: "link_tracking", text: "Link Tracking" },
           ],
+          outreachlyList: [
+            { value: "total_prospects", text: "Total Prospects" },
+            { value: "total_tasks", text: "Total Tasks" },
+            { value: "total_calls", text: "Total Calls" },
+            { value: "total_emails", text: "Total Emails" },
+          ],
           ninjaChatList: [
             { value: "departments", text: "Departments" },
             { value: "missedChats", text:"Missed Chats"},
@@ -1626,6 +1733,10 @@
           hideDistributionStats: false,
           contentUrls: [],
           hideContentURlsList: false,
+          hideTotalTasks:false,
+          hideTotalCalls:false,
+          hideTotalEmails:false,
+          hideTotalProspects:false,
           loadContentData: false,
           hidePageGrader: false,
           hideRankings: false,
@@ -1660,6 +1771,8 @@
             page_grader: true,
             rankings: true,
             link_tracking: true,
+            departments:true,
+            missedChats:true
           },
           chatInfo: {},
           regex: /<[^>]*(>|$)|&nbsp;|&gt;/g,
@@ -1703,6 +1816,10 @@
               this.showSEOReports();
               this.tabType = "ninjaseo";
             } 
+            else if (type == "outreachly") {
+              this.showOutreachlyReports();
+              this.tabType = "outreachly";
+            } 
             else if (type == "ninjachat") {
               this.showninjaChatReports();
               this.tabType = "ninjachat";
@@ -1731,6 +1848,7 @@
                 else if (this.tabType == "ninjacontent") this.showContentReports();
                 else if (this.tabType == "ninjaseo") this.showSEOReports();
                 else if (this.tabType == "ninjachat") this.showninjaChatReports();
+                else if (this.tabType == "outreachly") this.showOutreachlyReports();
                 else {
                   this.generateReport();
                   this.pieChartData();
@@ -2063,15 +2181,19 @@
                 self.isComparisionLoading = false;
               });
           },
-          async generateLineChart(type, dataSet, totalCount, key, chart_type) {
+          async generateLineChart(type, dataSet, totalCount, key, chart_type,title) {
             this.isBusy = true;
             var colors = Highcharts.getOptions().colors;
-            let title;
+            if(!title){
             if (chart_type == "analytics" || chart_type == "sessionSource" || chart_type == "signup") {
               key != "All" ? (title = `${key} Users : ${totalCount}`) : (title = `Total Users : ${totalCount}`);
             } else {
               chart_type = "line";
               key != "All" ? (title = `${key} Total Signups : ${totalCount}`) : (title = `Total Signups : ${totalCount}`);
+            }
+          }
+            else {
+              title = `${title} : ${totalCount} `;
             }
 
             Highcharts.chart(`container-${chart_type}-${type}`, {
@@ -2544,6 +2666,69 @@
               });
             self.getSEOStatistics("keywords_count");
           },
+          async showOutreachlyReports() {
+            const self = this;
+            self.isBusy = true;
+            self.emptyState = true;
+            self.hideContentURlsList = false;
+            self.hideTotalProspects = false;
+            self.hideTotalTasks = false;
+            self.hideTotalCalls = false;
+              self.outreachlyList.map((content_type, index) => {
+                let restDomain;
+                let token;
+                window.location.href.includes("env=dev")
+                  ? (token =
+                      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InJhaHVsLnZhbmFnYXJpQDUwMGFwcHMuY29tIiwidGVuYW50X2lkIjoyOTQ4LCJ1c2VyX2lkIjo4MjY2LCJzdWJzY3JpYmVkIjoibm8iLCJleHAiOiIxNjUxNTYzODQ5IiwiZW52IjoiZGV2In0.ExTyRL-rjtS_I82f0NfAdYroZHqasd06Q6BtZh-bVw0")
+                  : (token =
+                      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InJhaHVsLnZhbmFnYXJpQDUwMGFwcHMuY29tIiwidGVuYW50X2lkIjoxMzQxNiwidXNlcl9pZCI6MTg0ODYsInN1YnNjcmliZWQiOiJubyIsImV4cCI6IjE2NTE5MjYwMzAiLCJlbnYiOiJhcDEifQ.L-VNvrh9Tj70azJX8WQ6r3v5vZTJ330mgT5LvUEBZN4");
+                if (content_type.value == "total_prospects") {
+                  restDomain = `v2/prospectly/domain/prospects?fields=count(*) as count,date(created_date) as name&group_by=date(created_date)&${self.timeFormat()}`;
+                } else if(content_type.value == "total_tasks"){
+                  restDomain = `v2/prospectly/domain/tasks?fields=count(*) as count,date(due_date) as name&group_by=date(due_date)&${self.timeFormat()} and status='Completed'`;
+                }else if(content_type.value == "total_calls"){
+                  restDomain = `v2/prospectly/domain/prospect_stats?fields=count(*) as count,date(created_date) as name&group_by=date(created_date)&${self.timeFormat()} and type='Call'`;
+                }else if(content_type.value == "total_emails"){
+                  restDomain = `v2/prospectly/domain/prospect_stats?fields=count(*) as count,date(created_date) as name&group_by=date(created_date)&${self.timeFormat()} and type='Email'`;
+                }
+
+                let host_name = window.location.href.includes("env=dev") ? "https://api.dev.500apps.com" : "https://api.ap1.500apps.com"; //Set host
+
+                fetch(`${host_name}/${restDomain}`, {
+                  method: "GET",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${token}`,
+                  },
+                })
+                  .then(function(response) {
+                    return response.json();
+                  })
+                  .then(function(data) {
+                    self.emptyState = false;
+                    self.isBusy = false;
+                    if (data.length == 0) {
+                      self.emptyState = true;
+                      if (content_type.value == "total_prospects") self.hideTotalProspects = true;
+                      else if (content_type.value == "total_tasks") self.hideTotalTasks = true;
+                      else if (content_type.value == "total_calls") self.hideTotalCalls = true;
+                      else if (content_type.value == "total_emails")self.hideTotalEmails = true;
+                      return;
+                    }
+
+                    var dataSet = [];
+                    var totalSignupCount = 0;
+
+                    data.filter((item) => {
+                      totalSignupCount = totalSignupCount + parseInt(item.count);
+                      dataSet.push({ name: item.name, y: parseInt(item.count)});
+                    });
+                    var reportData = { totalSignupCount: totalSignupCount, reportData: dataSet };
+                    self.generateLineChart(`outreachly-${content_type.value}`, reportData, totalSignupCount,content_type.text,"line",content_type.text);
+                  });
+              });
+          },
           getSEOTableData(app_name, domain) {
             console.log("getSEOTable", app_name, domain);
             let restDomain;
@@ -2874,7 +3059,7 @@
                     console.log("ninjachatfdsgg",self.ninjaChatList)
                     dataSet.forEach(async (item) => {
                       console.log("item",item)
-                     await self.getNinjachatTableData(content_type.value, item.data.department_id);
+                     await self.getNinjachatTableData(content_type.value, item,item.name);
                     });
                   });
               });
@@ -2886,11 +3071,11 @@
        * @param {string} chatInfo To get the respective chat history
        */
        async chatTranscript(chatInfo) {
+         console.log("chatINFO",chatInfo)
         setTimeout(() => {
           this.$root.$emit("bv::toggle::collapse", `transcript_slideout-${chatInfo.contact_id}`);
         }, 200);
         this.chatInfo = chatInfo;
-        this.chatEnable = true;
       },
 
        // Format chat transcript
@@ -2902,6 +3087,7 @@
        * @param {Array} chatInfo Get the respective chat history
        */
       getMessageDuration(chatInfo) {
+        if(!chatInfo) return;
         var chatResponse = JSON.parse(chatInfo);
         var firstMessage = chatResponse[0].to ? chatResponse[0].to.time : chatResponse[0].from.time;
         var lastMessage = chatResponse[chatResponse.length - 1].to ? chatResponse[chatResponse.length - 1].to.time : chatResponse[chatResponse.length - 1].from.time;
@@ -2982,7 +3168,7 @@
         this.feedbackResponse = JSON.parse(chatInfo.response);
       },
 
-           async getNinjachatTableData(app_name, domain) {
+           async getNinjachatTableData(app_name, domain,name) {
             this.ninjaChatList[2].text=""
             if(app_name=="agents") return;
             console.log("getNinjachat", app_name, domain);
@@ -2994,20 +3180,15 @@
               : (token =
                   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imphc29uQDUwMGFwcHMuY29tIiwidGVuYW50X2lkIjoxMzQxNiwidXNlcl9pZCI6MTg0MTUsInN1YnNjcmliZWQiOiJubyIsImV4cCI6IjE2NTA4NzA5NDgiLCJlbnYiOiJhcDEifQ.8XtE3S25cJWMQMoMnEXrEXo8_wb2dpDTaFa9valZ3bE");
             if (app_name == "departments") {
-              restDomain = `v2/ninjachat/domain/chat_details?${this.timeFormat()}and department_id like '${domain}%'`;
+              restDomain = `v2/ninjachat/domain/chat_details?${this.timeFormat()}and department_id like '${domain.data.department_id}%'`;
             }
             if (app_name == "missedChats") {
-              restDomain = `v2/ninjachat/domain/agent_contact_details?${this.timeFormat()}and department_id like '${domain}%'`;
+              restDomain = `v2/ninjachat/domain/agent_contact_details?${this.timeFormat()}and department_id like '${domain.data.department_id}%'`;
             }
             let host_name = window.location.href.includes("env=dev") ? "https://api.dev.500apps.com" : "https://api.ap1.500apps.com"; //Set host
             console.log("restDomain", restDomain);
             fetch(`${host_name}/${restDomain}`, {
               method: "GET",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                authorization: `Bearer ${token}`,
-              },
               headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -3021,6 +3202,7 @@
                 data['message'] = data;
                 data['lines']=data
                 data['duration']=data
+                data['show_name']=name
                 this.ninjachatTableData[app_name].push(data);
                 console.log("ninjachat",this.ninjachatTableData[app_name])
               });

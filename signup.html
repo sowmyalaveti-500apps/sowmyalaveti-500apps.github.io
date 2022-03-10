@@ -156,6 +156,18 @@
       .p-mb-0 p {
         margin-bottom: 0px;
       }
+      .border-bottom-1px {
+    border-bottom: 1px dashed #edf2f9 !important;
+  }
+  .last-child-border-bottom .border-bottom-1px:last-child {
+    border-bottom: 0px !important;
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+.cursor-pointer {
+  cursor: pointer;
+}
     </style>
   </head>
 
@@ -1015,7 +1027,7 @@
             
 
             <b-tab title="NinjaChat" class="w-100" @click="resetDates('ninjachat')">
-                <!-- Ninjaseo Header -->
+                <!-- NinjaChat Header -->
                 <div class="row mx-0">
                   <div class="bg-light col-12 d-md-block d-lg-flex d-block justify-content-between px-3 padding-20 align-items-center">
                     <h2 class="font-weight-bold mb-0 text-nowrap">NinjaChat Reports</h2>
@@ -1057,7 +1069,7 @@
                             v-model="toDate"
                             :min="fromDate"
                             locale="en"
-                            @input="showSEOReports()"
+                            @input="showninjaChatReports()"
                             type="date"
                             :max="maxDate"
                             required
@@ -1070,7 +1082,7 @@
                     </div>
                   </div>
                 </div>
-                <!-- Ninjaseo Graphs -->
+                <!-- NinjaChat Graphs -->
                 <div>
                   <div class="row mx-0 mx-lg-3">
                     <b-col v-if="emptyState" class="col-12 col-md-12 col-12 pr-5 text-center min-height-60vh">
@@ -1079,120 +1091,91 @@
                       <p style="font-size: 16px">Kindly change the date range and try again</p>
                     </b-col>
   
-                    <b-col lg="6" md="12" v-if="!hidePageGrader" class="py-lg-5 py-3 px-0 min-height-60vh">
-                      <figure class="highcharts-figure">
-                        <div id="container-pie-ninjaseo-page_grader"></div>
+                    <b-col lg="6" md="12" class="py-lg-5 py-3 px-0 min-height-60vh">
+                      <figure  v-if="!hideDepartments" class="highcharts-figure">
+                        <div id="container-pie-ninjachat-departments"></div>
                       </figure>
                     </b-col>
-                    <b-col lg="6" v-if="!hideLinkTracking" class="py-lg-5 py-3 px-0 min-height-60vh">
-                      <figure class="highcharts-figure">
-                        <div id="container-pie-ninjaseo-link_tracking"></div>
+                    <b-col lg="6" class="py-lg-5 py-3 px-0 min-height-60vh">
+                      <figure  v-if="!hideAgents" class="highcharts-figure">
+                        <div id="container-pie-ninjachat-agents"></div>
                       </figure>
                     </b-col>
-                    <b-col lg="12" v-if="!hideRankings" class="py-lg-5 py-3 px-0 min-height-60vh">
-                      <figure class="highcharts-figure">
-                        <div id="container-pie-ninjaseo-rankings"></div>
-                        <div class="border rounded">
-                         
-                          <b-row class="pr-2 pt-4" v-if="RankingsDomainCount">
-                            <b-col lg="3" class="text-center">
-                              <h4>Unique Keyword Count</h4>
-                              <p class="h2">{{RankingsKeywordCount}}</p>
-                            </b-col>
-                            <b-col lg="3" class="text-center">
-                              <h4>Domain Count</h4>
-                              <p class="h2">{{RankingsDomainCount}}</p>
-                            </b-col>
-                            <b-col lg="3" class="text-center">
-                              <h4>Position Rank Below 100</h4>
-                              <p class="h2">{{`${seoStatistics.below_100.length}(${getPercentage(seoStatistics.below_100)}%)`}}</p>
-                            </b-col>
-                            <b-col lg="3" class="text-center">
-                              <h4>Position Rank Below 50</h4>
-                              <p class="h2">{{`${seoStatistics.below_50.length}(${getPercentage(seoStatistics.below_50)}%)`}}</p>
-                            </b-col>
-                            <b-col lg="3" class="text-center">
-                              <h4>Position Rank Below 25</h4>
-                              <p class="h2">{{`${seoStatistics.below_25.length}(${getPercentage(seoStatistics.below_25)}%)`}}</p>
-                            </b-col>
-                            <b-col lg="3" class="text-center">
-                              <h4>Position Rank Below 10</h4>
-                              <p class="h2">{{`${seoStatistics.below_10.length}(${getPercentage(seoStatistics.below_10)}%)`}}</p>
-                            </b-col>
-                            <b-col lg="3" class="text-center">
-                              <h4>Position Rank Below 5</h4>
-                              <p class="h2">{{`${seoStatistics.below_5.length}(${getPercentage(seoStatistics.below_5)}%)`}}</p>
-                            </b-col>
-                          </b-row>
-                          <b-row v-else class="text-center">
-                            <b-col class="m-5"> <b-spinner variant="primary"></b-spinner></b-col>
-                          </b-row>
-                        </div>
+                    <b-col lg="6" class="py-lg-5 py-3 px-0 min-height-60vh">
+                      <figure  v-if="!hideMissedChats" class="highcharts-figure">
+                        <div id="container-pie-ninjachat-missedChats"></div>
                       </figure>
                     </b-col>
                   </div>
                 </div>
-                <!-- Ninjaseo Table -->
+                <!-- NinjaChat Table -->
                 <div>
                   <b-tabs>
-                    <b-tab :title="app.text" v-for="app in ninjaSEOList">
-                      <div v-if="seoTableData[app.value] && seoTableData[app.value].length">
-                        <div class="d-flex justify-content-end my-3">
-                        <b-button :variant="!accordionVisible[app.value]?'primary':'secondary'" @click="accordionVisible[app.value]=!accordionVisible[app.value]">
-                          Toggle accrodions
-                        </b-button>
-                        </div>
-                        <div v-for="item in seoTableData[app.value]">
-                          <div>
-                            <b-card-header header-tag="header" class="p-0 height-50" role="tab">
-                              <b-button v-b-toggle="`collapse-${item[0].id}`" variant="white" class="text-left"><img :src="getAppLogo(app.value, item[0])" class="rounded-circle" width="30" height="30" /> {{getAppName(app.value, item[0])}}</b-button>
-                            </b-card-header>
+                    <b-tab :title="app.text" v-for="app in ninjaChatList">
+                          <div v-for="item in ninjachatTableData[app.value]">
                             <div>
-                              <b-collapse :id="`collapse-${item[0].id}`" :visible="accordionVisible[app.value]">
-                                <b-table striped hover :fields="getTableFields(app.value)" :items="item" class="table-sm">
-                                  <template #cell(is_success)="data">
-                                    {{ data.value ? JSON.parse(data.value).length + "/" + (parseInt(JSON.parse(data.value).length) + parseInt(JSON.parse(data.item.is_failure).length)) : "--" }}
+                                <b-table  striped hover :fields="getTableFields(app.value)" :items="item" class="table-sm">
+                                  <template #cell(name)="data">
+                                    {{ data.value ? data.value : "N/A"}}
                                   </template>
-                                  <template #cell(history)="data">
-                                    <b-link @click="showHistory(data.item)" v-b-toggle.history_sidebar>History</b-link>
+                                  <template #cell(city)="data">
+                                    <span class="ml-2 pl-1 text-capitalize">{{ data.value}}</span>
+                                  </template>
+                                  <template #cell(os)="data">
+                                    <b-img :src="getOSType(data.value)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                                  </template>
+                                  <template #cell(browser_version)="data">
+                                    <b-img :src="getBrowserType(data.value)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                                  </template>
+                                  <template #cell(device_type)="data">
+                                    <b-img :src="getDeviceType(data.value)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                                  </template>
+                                  <template #cell(from_url)="data">
+                                    <b-link href="data.value">
+                                     {{data.value}}
+                                    </b-link>
+                                  </template>
+                                  <template #cell(reference_url)="data">
+                                    <b-link v-if="data.value" :href="data.value" target="_blank" v-b-tooltip:hover :title="data.value">{{ data.value }}</b-link>
+                                    <span v-else>N/A</span>
+                                  </template>
+                                  <template #cell(is_block_ip_address)="data">
+                                    {{ data.value ? "Blocked" : ""}}
+                                  </template>
+                                  <template #cell(client_name)="data">
+                                    {{ data.value ? data.value :"N/A" }}
+                                  </template>
+                                  <template #cell(message)="data">
+                                    {{ JSON.parse(data.item.chat_history)[0].to.message.replace(regex,"") }}
+                                  </div>
+                                  </template>
+                                  <template #cell(lines)="data">
+                                    {{ JSON.parse(data.item.chat_history).length }}
+                                  </template>
+                                  <template #cell(duration)="data">
+                                    {{ getMessageDuration(data.item.chat_history)}}
+                                  </template>
+                                  <template #cell(closed_by)="data">
+                                    {{ data.value }}
+                                  </template>
+                                
+                                    <template #cell(chat_history)="data">
+                                      <div class="d-flex cursor-pointer option-icons mt-n1 mt-lg-0" v-b-tooltip.hover title="Full Chat Transcript" @click="chatTranscript(data.item)">transcript
+                                      </div>
+                                    </template>
+                               
+                                  <template #cell(response)="data">
+
+                                    <div class="d-flex cursor-pointer option-icons mt-n1 mt-lg-0" v-b-tooltip.hover title="Feedback" v-if="data.item.response" @click="showFeedback(data.item)">
+                                    Feedback</div>
+                                  </template>
+                                  <template #cell(tag_name)="data">
+                                    {{ data.value }}
                                   </template>
                                   <template #cell(created_date)="data">
                                     {{moment(data.value).fromNow()}}
                                   </template>
-                                  <template #cell(updated_date)="data">
-                                    {{moment(data.value).fromNow()}}
-                                  </template>
-                                  <template #cell(position_url)="data">
-                                    {{data.value || '--'}}
-                                  </template>
-                                  <template #cell(keyword_position)="data">
-                                    {{data.value || '--'}}
-                                    <span v-if="positionStatus(data.item) && positionStatus(data.item).search('increased') !== -1">
-                                      (<span class="fe fe-arrow-up text-success" :id="'increased-tooltip-' + data.item.id"
-                                        >{{ positionStatus(data.item).split(" ")[2] }}<b-tooltip :target="'increased-tooltip-' + data.item.id" triggers="hover">
-                                          <span class="fe fe-arrow-up text-success"></span>{{ positionStatus(data.item) }}
-                                        </b-tooltip></span
-                                      >)
-                                    </span>
-                                    <span v-else-if="positionStatus(data.item) && positionStatus(data.item).search('increased') !== -1">
-                                      (<span class="fe fe-arrow-down text-danger" :id="'decreased-tooltip-' + data.item.id"
-                                        >{{ positionStatus(data.item).split(" ")[2] }}<b-tooltip :target="'decreased-tooltip-' + data.item.id" triggers="hover">
-                                          <span class="fe fe-arrow-down text-danger"></span>{{ positionStatus(data.item) }}
-                                        </b-tooltip></span
-                                      >)
-                                    </span>
-                                  </template>
-                                  <template #cell(payment_amount)="data">
-                                    {{data.value || '--'}}
-                                  </template>
-                                  <template #cell(notes)="data">
-                                    <b-link @click="showHistory(data.item, 'notes')" v-b-toggle.history_sidebar>Notes</b-link>
-                                  </template>
-                                  <template #cell(activity)="data">
-                                    <b-link @click="showHistory(data.item, 'activities')" v-b-toggle.history_sidebar>Activities</b-link>
-                                  </template>
                                 </b-table>
-                              </b-collapse>
                             </div>
                           </div>
                         </div>
@@ -1205,147 +1188,296 @@
                 </div>
                 <b-overlay :show="isBusy || loadContentData " no-wrap opacity="0.5" spinner-variant="primary"></b-overlay>
                 <b-sidebar
-                  id="history_sidebar"
-                  :title="seoPageType==='link_tracking'?'Link Trackings': 'Keyword History'"
-                  width="40%"
-                  sidebar-class="border-left "
-                  right
-                  shadow
-                  body-class="bg-soft-light"
-                  header-class="bg-white border-bottom d-flex flex-row-reverse justify-content-between  close-btn-right"
-                  responsive
-                  :lazy="true"
-                  @hidden="resetHistory()"
-                >
-                  <div v-if="pageGraderHistory.length && seoPageType==='page_grader'">
-                    <b-card no-body v-for="(history, index) in pageGraderHistory" :key="index" class="shadow-none mb-3">
-                      <b-card-header>
-                        <p class="mb-0 text-truncate">
-                          {{ history.link_url }}/{{ history.keyword }} -
-                        </p>
-                        <span :id="'score-tooltip-' + history.id" :class="history.score < 50 ? 'text-danger' : history.score < 90 ? 'text-warning' : 'text-success'">{{ history.score }}</span>
-                        <p class="mb-0 ml-2 text-right">
-                          {{moment(history.created_date).fromNow()}}
-                        </p>
-                      </b-card-header>
-                      <b-card-body>
-                        <div>
-                          <b-button block v-b-toggle="`rules-success-${index}`" variant="white" class="block mb-2"><span class="text-success"> Success</span></b-button>
-                          <b-collapse :id="'rules-success-'+index" accordion="my-accordion-1" role="tabpanel">
-                            <div class="list-group my-3">
-                              <div class="list-group-item" v-for="item in JSON.parse(history.is_success)">{{item.message}}</div>
-                            </div>
-                          </b-collapse>
-                        </div>
-                        <div>
-                          <b-button block v-b-toggle="`rules-failure-${index}`" variant="white" class="block"><span class="text-danger">Failure</span></b-button>
-                          <b-collapse :id="'rules-failure-'+index" accordion="my-accordion-2" role="tabpanel">
-                            <div class="list-group my-3">
-                              <div class="list-group-item" v-for="item in JSON.parse(history.is_failure)">{{item.message}}</div>
-                            </div>
-                          </b-collapse>
-                        </div>
-                      </b-card-body>
-                    </b-card>
+                :id="`transcript_slideout-${chatInfo.contact_id}`"
+                body-class="overflow-x-hidden p-0"
+                sidebar-class="border-left multi-sidebar slideout-body"
+                right
+                no-header
+                shadow
+                bg-variant="white"
+                width="80%"
+                ref="slideout_ref"
+              >
+                <template #default="{ hide }">
+                  <div class="d-flex justify-content-between align-items-center flex-row-reverse bg-white border-bottom rounded-0 close-btn-right p-3">
+                    <div class="align-items-center d-flex">
+                      <b-button variant="white px-3 border-right-0 rounded-right-0" size="sm" :disabled="disabledPrev" @click="changeChatTranscripts(chatInfo, 'prev',ninjachatTableData['departments'])">
+                        <i class="fe fe fe-arrow-left align-middle mr-2" /><span class="d-none d-md-inline-block">prev</span>
+                      </b-button>
+                      <b-button variant="white px-3 rounded-left-0 cursor-pointer" size="sm" :disabled="disabledNext" @click="changeChatTranscripts(chatInfo, 'next',ninjachatTableData['departments'])">
+                        <span class="d-none d-md-inline-block cursor-pointer">next</span
+                        >
+                      </b-button>
+                      <div class="font-size-lg mr-4 ml-4 text-muted">
+                        <span class="cursor-pointer"  @click="hide">x</span>
+                      </div>
+                    </div>
+                    <h3 class="mb-0">Chat Transcript</h3>
                   </div>
-                  <div v-else-if="rankingHistory.id && seoPageType==='rankings'">
-                    <div>
-                      <b-card class="shadow-none">
-                        <div class="list-group list-group-flush my-n3">
-                          <div class="list-group-item py-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <p class="mb-0 text-muted small">URL</p>
-                              <p class="mb-0 small">
-                                <b-link :href="rankingHistory.url" target="_blank"> {{ rankingHistory.url }}</b-link>
-                              </p>
+                  <div>
+                   <b-row class="mx-0 chat-transcript-sidelout">
+                    <b-col lg="4" md="12" class="p-17px border-right order-2 order-lg-1 bg-soft-light">
+                      <b-card class="shadow-none mb-3" body-class="p-0">
+                        <div class="height-50 p-3 border-bottom d-flex align-items-center">
+                          <h4 class="mb-0 mt-1">Details</h4>
+                        </div>
+                        <div class="text-left p-4">
+                          <div class="ninjachat-small-2 d-flex justify-content-between align-items-center mb-0">
+                            <div>
+                              <h5 class="mb-0">Visitor</h5>
+                            </div>
+                            <div class="d-flex">
+                               <b-img :src="getBrowserType(chatInfo.browser_version)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                               <b-img :src="getOSType(chatInfo.os)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                               <b-img :src="getDeviceType(chatInfo.device_type)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                               <b-img :src="getCountry(chatInfo.country)" class="img-fluid" alt="..." width="20" height="20"></b-img>
+                               <span class="ml-2 pl-1 text-capitalize">{{ chatInfo.country}}</span>
                             </div>
                           </div>
-                          <div class="list-group-item py-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <p class="mb-0 text-muted small">Keyword</p>
-                              <p class="mb-0 small">{{ rankingHistory.keywords }}</p>
+                          <hr class="my-3" />
+                          <div class="list-group list-group-flush my-n3">
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                   Name
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="text-muted">{{ chatInfo.name ? chatInfo.name : "N/A"}}</small>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <div class="list-group-item py-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <p class="mb-0 text-muted small">Country</p>
-                              <p class="mb-0 small">
-                                <country-flag :id="`country-${rankingHistory.country}`" :country="rankingHistory.country" size="small" /><span :id="`country-${rankingHistory.country}`" class="ml-2"
-                                  >{{ regionNames.of(rankingHistory.country) }}</span
-                                >
-                              </p>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                    Email
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="text-muted">
+                                    {{ chatInfo.email ? chatInfo.email : "N/A" }}
+                                  </small>
+                                </div>
+                              </div>
                             </div>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                    From URL
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="text-muted">
+                                    <b-link :href="chatInfo.from_url" target="_blank">{{ chatInfo.from_url }}</b-link>
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                    Refferer URL
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="text-muted">
+                                    <div class="text-truncate-20ch">
+                                      <b-link v-if="chatInfo.reference_url" :href="chatInfo.reference_url" target="_blank" v-b-tooltip:hover :title="chatInfo.reference_url">{{ chatInfo.reference_url }}</b-link>
+                                      <span v-else>N/A</span>
+                                    </div>
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                    iP Address
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="small text-muted">
+                                    {{ chatInfo.ip_address }}
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                   Location
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="small text-muted"> {{ chatInfo.city }},{{ chatInfo.country }} </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                   No.of.lines
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  <small class="small text-muted"> {{ formatData().length }} </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                     Duration 
+                                  </h5>
+                                </div>
+                                <!-- <div class="col-auto">
+                                  <small class="small text-muted"> {{ getMessageDuration(JSON.parse(chatInfo.chat_history)) }} </small>
+                                </div> -->
+                              </div>
+                            </div> 
+              
+                            <div class="list-group-item">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h5 class="mb-0">
+                                     Created Date
+                                  </h5>
+                                </div>
+                                <div class="col-auto">
+                                  {{moment(chatInfo.created_date).fromNow()}}
+                                </div>
+                              </div>
+                            </div>
+                           
                           </div>
                         </div>
                       </b-card>
-                    </div>
-                    <div class="list-group list-group-flush list-group-activity my-n3 crm-activity-timeline max-height-550 overflow-onhover">
-                      <div class="list-group-item" v-for="item in JSON.parse(rankingHistory.history)">
-                        <div class="row align-items-center">
-                          <div class="col-auto">
-                            <div class="avatar-sm">
-                              <div class="avatar-title font-size-lg bg-primary-soft rounded-circle text-primary">
-                                <i class="fe fe-award"></i>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col ml-n3">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <div class="d-flex">
-                                <p class="mb-0 text-muted">Position</p>
-                                <p class="mb-0 ml-2">
-                                  <span class="badge badge-soft-warning small"> {{item.history}}</span>
-                                </p>
-                                <p class="mb-0 ml-2 font-size-base">
-                                  {{moment(moment .utc(item.updated_date) .local() .format('YYYY-MM-DD HH:mm:ss')).fromNow()}}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
+                    </b-col>
+                    <b-col lg="8" md="12" class="px-0 border-lg-right order-2 order-lg-1">
+                      <b-card class="shadow-none mb-3 chat-transcript border-0" body-class="p-0">
+                        <div class="d-flex align-items-center p-3 border-bottom justify-content-between">
+                          <h4 class="mb-0">History</h4>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-else-if="linkTrackingNotes.length">
-                    <b-card class="shadow-none">
-                      <div class="bg-soft-light w-100 p-3 rounded mb-3" v-for="(note,index) in linkTrackingNotes" :key="index">
-                        <p v-html="note.note" class="mb-0 p-mb-0"></p>
-                      </div>
-                    </b-card>
-                  </div>
-                  <div v-else-if="linkTrackingActivities.length">
-                    <div class="list-group list-group-flush list-group-activity my-n3 crm-activity-timeline max-height-550 overflow-onhover">
-                      <div class="list-group-item" v-for="(activity, index) in linkTrackingActivities" :key="index">
-                        <div class="row align-items-center">
-                          <div class="col-auto">
-                            <div class="avatar-sm">
-                              <div class="avatar-title font-size-lg bg-primary-soft rounded-circle text-primary">
-                                <i class="fe fe-award"></i>
+                        <div>
+                          <b-col lg="12" md="12" class="px-0 border-lg-right order-2 order-lg-1">
+                            <div class="p-4 ninja-chat-scroll">
+                              <div v-for="(list, index) in formatData()" :key="index" class="comment mb-2">
+                                <div class="comment-body w-100" v-if="list.to">
+                                  <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="comment-title">
+                                     Visitor
+                                    </h5>
+                                    <p class="comment-time">{{ list.to.time }}</p>
+                                  </div>
+                                  <p class="comment-text">
+                                    {{ list.to.message }}
+                                  </p>
+                                </div>
+                                <div v-else class="comment-body w-100">
+                                  <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="comment-title">
+                                       Agents
+                                    </h5>
+                                    <p class="comment-time">{{ list.from.time }}</p>
+                                  </div>
+                                  <p v-html="list.from.message" class="comment-text mb-0 img-comment">
+                                    {{ list.from.message }}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div class="col ml-n3">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <div class="d-flex">
-                                <p class="mb-0 text-body">{{activity.activity}}</p>
-  
-                                <p class="mb-0 ml-2 font-size-base">
-                                  {{moment(activity.created_date).fromNow()}}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
+                          </b-col>
                         </div>
-                      </div>
-                    </div>
+                      </b-card>
+                    </b-col>
+                  </b-row>
                   </div>
-                  <div v-else class="text-center">
-                    <!-- {{seoPageType==='link_tracking'?"No Data Available":"No History"}} -->
-                    <img width="250" class="pt-2" src="https://infinity.500apps.com/img/empty-states/projectsly/no-reports.svg" />
-                    <h3 class="font-weight-bold pt-4 mb-2" style="font-size: 20px">No Data Available</h3>
-                    <p style="font-size: 16px">Kindly change the date range and try again</p>
-                  </div>
+                </template>
                 </b-sidebar>
+  
+
+                 <!-- Chat feedback starts here -->
+      <b-sidebar
+      :id="`feedback_slideout-${chatInfo.contact_id}`"
+      body-class="overflow-x-hidden p-0 bg-soft-light"
+      sidebar-class="border-left multi-sidebar slideout-body"
+      right
+      no-header
+      shadow
+      backdrop
+      bg-variant="white"
+      width="550px"
+      ref="slideout_ref"
+    >
+      <template #default="{ hide }">
+        <div class="d-flex justify-content-between align-items-center flex-row-reverse bg-white border-bottom rounded-0 close-btn-right py-3 px-4 sticky-top">
+          <div class="align-items-center d-flex my-1">
+            <!-- <div class="align-items-center">
+              <NameInfo v-if="chatInfo.name" :name="chatInfo.name" :email="chatInfo.email" />
+              <div class="mt-2">{{ $t("ninjachat.accept_helptext") }} {{ name }} <CreatedModifiedBy :row="chatInfo" :show_created_on="true" :is_500apps_user="false" /></div>
+            </div> -->
+            <b-button variant="white px-3 border-right-0 rounded-right-0 cursor-pointer" size="sm" :disabled="disabledPrev" @click="changeChatTranscripts(chatInfo, 'prev',ninjachatTableData['departments'])">
+             <span class="d-none d-md-inline-block">prev</span>
+            </b-button>
+            <b-button variant="white px-3 rounded-left-0 cursor-pointer" size="sm" :disabled="disabledNext" @click="changeChatTranscripts(chatInfo, 'next',ninjachatTableData['departments'])">
+              <span class="d-none d-md-inline-block">next</span
+              ><i class="ml-2 align-middle fe fe-arrow-right" />
+            </b-button>
+            <div class="font-size-lg mr-3 ml-3 text-muted">
+              <span class="cursor-pointer" @click="hide">x</span>
+            </div>
+          </div>
+          <h3 class="mb-0">Feedback</h3>
+        </div>
+        <b-card class="shadow-none card-body pt-0 m-3" v-if="chatInfo.response">
+          
+          <div class="last-child-border-bottom">
+            <div v-for="input in Object.keys(feedbackResponse.inputFieldResponse)" :key="input" class="line-height-1-6 border-bottom-1px pb-3 mb-3">
+              <h4 class="mb-1 ">{{ input }}</h4>
+              <p class="mb-0 line-height-1-6">{{ feedbackResponse.inputFieldResponse[input] }}</p>
+            </div>
+            <div v-for="text in Object.keys(feedbackResponse.textFieldResponse)" :key="text" class="line-height-1-6 border-bottom-1px pb-3 mb-3">
+              <h4 class="mb-1 ">{{ text }}</h4>
+              <p class="mb-0 line-height-1-6">{{ feedbackResponse.textFieldResponse[text] }}</p>
+            </div>
+            <div v-for="checkbox in Object.keys(feedbackResponse.checkBoxFieldResponse)" :key="checkbox" class="line-height-1-6 border-bottom-1px pb-3 mb-3">
+              <h4 class="mb-1 ">{{ checkbox }}</h4>
+              <p class="mb-0 line-height-1-6">{{ feedbackResponse.checkBoxFieldResponse[checkbox] }}</p>
+            </div>
+            <div v-for="radio in Object.keys(feedbackResponse.radioFieldResponse)" :key="radio" class="line-height-1-6 border-bottom-1px pb-3 mb-3">
+              <h4 class="mb-1 ">{{ radio }}</h4>
+              <p class="mb-0 line-height-1-6">{{ feedbackResponse.radioFieldResponse[radio] }}</p>
+            </div>
+          </div>
+        </b-card>
+        <div v-else class="align-items-center d-flex m-3">
+          <b-card class="shadow-none" no-body>
+            <b-card-body class="text-center p-5">
+              <b-row class="justify-content-center">
+                <div class="col-12 col-md-7 col-xl-7 px-0">
+                  <!-- Image -->
+                  <img src="https://infinity.500apps.com/img/empty-states/botup/no-bots-flows-found.svg" alt="..." class="img-fluid mb-4 pb-2" />
+                  <!-- Content -->
+                  <p class="text-muted mb-0">
+                    There is no feedback form to display.To add a feedback form enable Post Chat Survey.
+                  </p>
+                </div>
+              </b-row>
+              <!-- / .row -->
+            </b-card-body>
+          </b-card>
+        </div>
+      </template>
+    </b-sidebar>
+    <!-- Chat feedback ends here -->
               </b-tab>
 
           </b-tabs>
@@ -1421,6 +1553,11 @@
             { value: "rankings", text: "Rankings" },
             { value: "link_tracking", text: "Link Tracking" },
           ],
+          ninjaChatList: [
+            { value: "departments", text: "Departments" },
+            { value: "missedChats", text:"Missed Chats"},
+            { value: "agents", text:"Agents"},
+          ],
           continentList: [
             { value: "all", text: "All" },
             { value: "AS", text: "Asia" },
@@ -1458,6 +1595,30 @@
             { key: "domain_authority", label: "Domain Authority", sortable: true },
             { key: "activity", label: "" },
           ],
+          chatFields: [
+          { key: "client_name", label: "Name" },
+          { key: "message", label: "Message" },
+          { key: "lines", label: "No.of lines" },
+          { key: "duration", label: "Duration" },
+          { key: "closed_by", label: "Closed By" },
+          { key: "chat_history", label: "Chat History" },
+          { key: "response", label: "Feedback" },
+          { key: "tag_name", label: "tags" },
+          { key: "created_date", label: "Created Date", data_type: "date" },
+        ],
+        contactFields: [
+          { key: "name" , label:"Name"},
+          { key:"from_url",label:"From URL"},
+          { key: "reference_url", label: "Referrer URL" },
+          { key:"ip_address",label:"Ip Address"},
+          {key:"city",label:"City"},
+          {key:"resolution",label:"Resolution"},
+          { key: "device_type", label: "Device Type", thClass: "text-center", tdClass: "text-center" },
+          { key: "os", label: "OS", thClass: "text-center", tdClass: "text-center" },
+          { key: "browser_version", label: "Browser Version", thClass: "text-center", tdClass: "text-center" },
+          { key: "is_block_ip_address", label: "", thClass: "text-center", tdClass: "text-center" },
+          { key: "created_date", label: "Created Date", data_type: "date" },
+        ],
           host: "https://api.500apps.com",
           appsList: [],
           showAllAppsOnce: false,
@@ -1490,11 +1651,24 @@
             rankings: [],
             link_tracking: [],
           },
+          ninjachatTableData: {
+            departments: [],
+            agents:[],
+            missedChats:[],
+          },
           accordionVisible: {
             page_grader: true,
             rankings: true,
             link_tracking: true,
           },
+          chatInfo: {},
+          regex: /<[^>]*(>|$)|&nbsp;|&gt;/g,
+          disabledPrev: false,
+        disabledNext: false,
+        feedbackResponse:{},
+        hideDepartments: false,
+          hideAgents: false,
+          hideMissedChats: false,
         },
         async mounted() {
           let minDate = new Date(this.toDate);
@@ -1518,6 +1692,7 @@
             this.toDate = new Date();
             let minDate = new Date(this.toDate);
             this.fromDate = moment(new Date(minDate.setDate(minDate.getDate() - 7))).format("YYYY-MM-DD");
+            console.log("TYPEE",type)
             if (type == "analytics") {
               this.generateBarAnalytics();
               this.tabType = "analytics";
@@ -1527,7 +1702,11 @@
             } else if (type == "ninjaseo") {
               this.showSEOReports();
               this.tabType = "ninjaseo";
-            } else {
+            } 
+            else if (type == "ninjachat") {
+              this.showninjaChatReports();
+              this.tabType = "ninjachat";
+            }else {
               this.tabType = "signups";
               this.generateReport();
               this.pieChartData();
@@ -1551,6 +1730,7 @@
                 if (this.tabType == "analytics") this.generateBarAnalytics();
                 else if (this.tabType == "ninjacontent") this.showContentReports();
                 else if (this.tabType == "ninjaseo") this.showSEOReports();
+                else if (this.tabType == "ninjachat") this.showninjaChatReports();
                 else {
                   this.generateReport();
                   this.pieChartData();
@@ -1717,6 +1897,7 @@
             });
           },
           generateReportByType(type, data, count) {
+              console.log("type",type,data,count)
             const self = this;
             if (type == "browser_type" && !count) this.hideBrowserReport = true;
             else if (type == "device_type" && !count) this.hideDeviceReport = true;
@@ -1724,10 +1905,10 @@
             else if (type == "country" && !count) this.hideCountryReport = true;
             else if (type == "auth_type" && !count) this.hideAuthReport = true;
             let title;
-            if (type.includes("ninjacontent") || type.includes("ninjaseo")) title = `${type.split("-")[1].replace("_", " ")} Total Count : ${count}`;
+            if (type.includes("ninjacontent") || type.includes("ninjaseo") || type.includes("ninjachat")) title = `${type.split("-")[1].replace("_", " ")} Total Count : ${count}`;
             else type.includes("analytic") ? (title = `${type.split("-")[1]} wise users : ${count}`) : (title = `${type.split("_")[0]} wise signups count : ${count}`);
             let totalCountText;
-            if (type.includes("ninjacontent") || type.includes("ninjaseo")) totalCountText = `Total Count`;
+            if (type.includes("ninjacontent") || type.includes("ninjaseo") ||  type.includes("ninjachat")) totalCountText = `Total Count`;
             else type.includes("analytic") ? (totalCountText = "Total Users") : (totalCountText = "Total Signups");
             if (type == "app_wise_users") title = `Inside App Users : ${count}`;
 
@@ -2441,9 +2622,12 @@
               });
           },
           getTableFields(app_name) {
+              console.log("app_name",app_name)
             self = this;
             if (app_name === "page_grader") return self.pageGraderFields;
             else if (app_name === "rankings") return self.rankingsFields;
+            else if (app_name == "departments") return self.chatFields;
+            else if(app_name == "missedChats") return self.contactFields
             else return self.linkTrackingFields;
           },
           showHistory(data, type) {
@@ -2625,7 +2809,225 @@
               }
             }
           },
+
+
+          async showninjaChatReports(){
+            const self = this;
+            self.isBusy = true;
+            self.emptyState = true;
+            self.hideDepartments= false,
+         self.hideAgents= false,
+          self.hideMissedChats= false,
+            console.log("ninjachat",self.ninjaChatList)
+              self.ninjaChatList.map((content_type, index) => {
+                let restDomain;
+                let token;
+                window.location.href.includes("env=dev")
+                  ? (token =
+                      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvd215YS5sYXZldGlANTAwYXBwcy5jb20iLCJ0ZW5hbnRfaWQiOjIxNTksInVzZXJfaWQiOjgwNjEsInN1YnNjcmliZWQiOiJubyIsImV4cCI6IjE2NTE5MjU0ODAiLCJlbnYiOiJkZXYifQ.RTx48w4CFUM6bbrULmFkHJUUApzYWxmu3NzFoRB9nXc")
+                  : (token =
+                      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imphc29uQDUwMGFwcHMuY29tIiwidGVuYW50X2lkIjoxMzQxNiwidXNlcl9pZCI6MTg0MTUsInN1YnNjcmliZWQiOiJubyIsImV4cCI6IjE2NTA4NzA5NDgiLCJlbnYiOiJhcDEifQ.8XtE3S25cJWMQMoMnEXrEXo8_wb2dpDTaFa9valZ3bE");
+                if (content_type.value == "departments") {
+                  restDomain = `v2c/ninjachat/get_department_details`;
+                }
+                if (content_type.value == "agents") {
+                  restDomain = `v2c/ninjachat/get_agent_details`;
+                }
+                if(content_type.value == "missedChats") { 
+                  restDomain = `v2c/ninjachat/get_missed_count`;
+                }
+                let host_name = window.location.href.includes("env=dev") ? "https://api.dev.500apps.com" : "https://api.ap1.500apps.com"; //Set host
+
+                fetch(`https://old-zebra-14.loca.lt/${restDomain}`, {
+                  method: "POST",
+                  body:JSON.stringify({
+                where:`${this.timeFormat().replace("where=date(created_date)","date(cd.created_date)")}`
+              }),
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    authorization: `Bearer ${token}`,
+                  },
+                })
+                  .then(function(response) {
+                    return response.json();
+                  })
+                  .then(function(data) {
+                    self.emptyState = false;
+                    self.isBusy = false;
+                    if (data.length == 0) {
+                      self.emptyState = true;
+                      if (content_type.value == "departments") self.hideDepartments = true;
+                      else if (content_type.value == "agents") self.hideAgents = true;
+                      else self.hideMissedChats = true;
+                      return;
+                    }
+
+                    var dataSet = [];
+                    var totalSignupCount = 0;
+                    data.filter((item) => {
+                      totalSignupCount = totalSignupCount + parseInt(item.count);
+                      dataSet.push({ name: item.show_name, y: parseInt(item.count), data: item });
+                    });
+                    var reportData = { totalSignupCount: totalSignupCount, reportData: dataSet };
+                    self.generateReportByType(`ninjachat-${content_type.value}`, reportData, totalSignupCount);
+                    console.log("ninjachatfdsgg",self.ninjaChatList)
+                    dataSet.forEach(async (item) => {
+                      console.log("item",item)
+                     await self.getNinjachatTableData(content_type.value, item.data.department_id);
+                    });
+                  });
+              });
+          },
+
+       /**
+       * To display the details of chat transcript
+       * @param {id} contactID To get the respective contact id
+       * @param {string} chatInfo To get the respective chat history
+       */
+       async chatTranscript(chatInfo) {
+        setTimeout(() => {
+          this.$root.$emit("bv::toggle::collapse", `transcript_slideout-${chatInfo.contact_id}`);
+        }, 200);
+        this.chatInfo = chatInfo;
+        this.chatEnable = true;
+      },
+
+       // Format chat transcript
+       formatData() {
+        return this.chatInfo.chat_history ? JSON.parse(this.chatInfo.chat_history) : [];
+      },
+       /**
+       * Get the duration of the chat
+       * @param {Array} chatInfo Get the respective chat history
+       */
+      getMessageDuration(chatInfo) {
+        var chatResponse = JSON.parse(chatInfo);
+        var firstMessage = chatResponse[0].to ? chatResponse[0].to.time : chatResponse[0].from.time;
+        var lastMessage = chatResponse[chatResponse.length - 1].to ? chatResponse[chatResponse.length - 1].to.time : chatResponse[chatResponse.length - 1].from.time;
+        var minutesDiff = moment().diff(moment(firstMessage), "minutes") - moment().diff(moment(lastMessage), "minutes");
+        var duration = minutesDiff < 0 ? -minutesDiff : minutesDiff;
+        return duration;
+      },
+
+       /**
+       * Change chat transcripts when user triggers prev and next button
+       * @param {Array} chatInfo Get the respective chat data
+       * @param {String} type type selected(prev/next)
+       */
+       async changeChatTranscripts(chatInfo, type,chats) {
+         console.log("change",chats)
+        var data = chats[0].filter((item) => {
+          return item.id == chatInfo.id;
+        });
+        var row_index = chats[0].indexOf(data[0]);
+        type == "next" ? (row_index = row_index + 1) : (row_index = row_index - 1);
+        if (row_index == chats[0].length) return (this.disabledNext = true);
+        else if (row_index == -1) return (this.disabledPrev = true);
+        this.disabledNext = false;
+        this.disabledPrev = false;
+        this.chatInfo = chats[0][row_index];
+        console.log("chatInfo",this.chatInfo)
+      },
+
+        // Get device type and browser of read recipient
+    getBrowserType(device_type) {
+      if (device_type == "Chrome" ){
+        return "https://infinity.500apps.com/img/chrome.png"
+      }
+      if (device_type == "Firefox") {
+        return "https://infinity.500apps.com/img/firefox.png"
+      }
+    },
+
+    getOSType(device_type){
+      if (device_type == "Linux" ){
+        return "https://infinity.500apps.com/img/flags/linux_os.png"
+      }
+      if (device_type == "Windows" ){
+        return "https://infinity.500apps.com/img/flags/windows_os.png"
+      }
+    },
+    getDeviceType(device_type){
+      if (device_type == "Desktop" ){
+        return "desktop.svg"
+      }
+    },
+    getCountry(device_type){
+     console.log("device",device_type)
+     if(device_type=="India"){
+       return "india-flag.svg"
+     }
+    },
+
+    getDepartments(departments){
+      var data = departments.forEach((department)=>{
+        return department
+      })
+      console.log("data",data)
+      return data
+    },
+
+      /**
+       * To display the details of chat transcript
+       * @param {id} contactID To get the respective contact id
+       * @param {string} chatInfo To get the respective chat history
+       */
+       async showFeedback(chatInfo) {
+        console.log("chatInfo",chatInfo)
+        setTimeout(() => {
+          this.$root.$emit("bv::toggle::collapse", `feedback_slideout-${chatInfo.contact_id}`);
+        }, 400);
+        this.chatInfo = chatInfo;
+        this.feedbackResponse = JSON.parse(chatInfo.response);
+      },
+
+           async getNinjachatTableData(app_name, domain) {
+            this.ninjaChatList[2].text=""
+            if(app_name=="agents") return;
+            console.log("getNinjachat", app_name, domain);
+            let restDomain;
+            let token;
+            window.location.href.includes("env=dev")
+              ? (token =
+                  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNvd215YS5sYXZldGlANTAwYXBwcy5jb20iLCJ0ZW5hbnRfaWQiOjIxNTksInVzZXJfaWQiOjgwNjEsInN1YnNjcmliZWQiOiJubyIsImV4cCI6IjE2NTE5MjU0ODAiLCJlbnYiOiJkZXYifQ.RTx48w4CFUM6bbrULmFkHJUUApzYWxmu3NzFoRB9nXc")
+              : (token =
+                  "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imphc29uQDUwMGFwcHMuY29tIiwidGVuYW50X2lkIjoxMzQxNiwidXNlcl9pZCI6MTg0MTUsInN1YnNjcmliZWQiOiJubyIsImV4cCI6IjE2NTA4NzA5NDgiLCJlbnYiOiJhcDEifQ.8XtE3S25cJWMQMoMnEXrEXo8_wb2dpDTaFa9valZ3bE");
+            if (app_name == "departments") {
+              restDomain = `v2/ninjachat/domain/chat_details?${this.timeFormat()}and department_id like '${domain}%'`;
+            }
+            if (app_name == "missedChats") {
+              restDomain = `v2/ninjachat/domain/agent_contact_details?${this.timeFormat()}and department_id like '${domain}%'`;
+            }
+            let host_name = window.location.href.includes("env=dev") ? "https://api.dev.500apps.com" : "https://api.ap1.500apps.com"; //Set host
+            console.log("restDomain", restDomain);
+            fetch(`${host_name}/${restDomain}`, {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`,
+              },
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`,
+              },
+            })
+              .then(function(response) {
+                return response.json();
+              })
+              .then((data) => {
+                data['message'] = data;
+                data['lines']=data
+                data['duration']=data
+                this.ninjachatTableData[app_name].push(data);
+                console.log("ninjachat",this.ninjachatTableData[app_name])
+              });
+          },
+
         },
+     
       });
     </script>
   </body>

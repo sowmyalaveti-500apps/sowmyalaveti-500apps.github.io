@@ -375,6 +375,6 @@
   word-break: break-all !important;
 }
 .ninjachat-ultra .ninjachat-chat p span {
-  background-color: transparent !important;
+  /* background-color: transparent !important; */
   line-height: 1 !important;
 }

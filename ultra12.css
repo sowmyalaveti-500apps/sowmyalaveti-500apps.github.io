@@ -113,7 +113,7 @@
   }
 }
 .ninjachat-ultra .ninjachat-chat {
-  /*background-color: rgb(255, 255, 255) !important; */
+  background-color: rgb(255, 255, 255) !important;
   position: fixed !important;
   right: 50px !important;
   bottom: 90px !important;
@@ -375,6 +375,6 @@
   word-break: break-all !important;
 }
 .ninjachat-ultra .ninjachat-chat p span {
-  background-color: transparent !important;
+  /* background-color: transparent !important; */
   line-height: 1 !important;
 }

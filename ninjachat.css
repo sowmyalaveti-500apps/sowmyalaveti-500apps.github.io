@@ -5,7 +5,8 @@
 /* The Modal (background) */
 .ninjachat .ninjachat-modal {
   display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
+  position: absolute;
+  /* Stay in place */
   /* Sit on top */
   padding-top: 50px; /* Location of the box */
   left: 0;
@@ -245,7 +246,7 @@ button {
   height: 80px !important;
 }
 .cleanslate .ninjachat .margin-zero {
-  word-break: break-all !important;
+  word-break: break-word !important;
 }
 .cleanslate .ninjachat .ninjachat-send-img {
   bottom: 40px !important;
@@ -253,8 +254,8 @@ button {
   height: 22px !important;
   right: 15px !important;
 }
-.cleanslate .message-text.text-break p {
-  word-break: break-all !important;
+.cleanslate .message-text.text-break .ptag {
+  word-break: break-word !important;
   font-size: 13px !important;
 }
 .cleanslate ol,
@@ -625,8 +626,11 @@ button {
   }
 }
 .cleanslate .ninjachat-chat .ninjachat-bg-img-section {
-  max-height: calc(100vh - 410px) !important;
+  max-height: calc(100vh - 520px) !important;
   overflow-x: hidden !important;
+}
+.cleanslate.mobile-chat-widget .ninjachat-chat .chat-body-height.ninjachat-bg-img-section {
+  max-height: calc(100vh - 300px) !important;
 }
 .mobile-chat-widget.cleanslate .main-content .ninjachat-chat {
   width: 100% !important;
@@ -636,7 +640,7 @@ button {
   bottom: 0px !important;
 }
 .mobile-chat-widget .mobile-footer {
-  position: fixed;
+  position: absolute;
   width: 100%;
   bottom: 0px;
 }
@@ -727,8 +731,10 @@ button {
   box-shadow: 0px 0px 15px 2px #f1f1f1 !important;
   position: absolute !important;
   width: 86% !important;
-  top: 100px !important;
+  top: 94px !important;
   border-radius: 4px !important;
+  right: 25px !important;
+  left: 25px !important;
 }
 .cleanslate .modal-prevent-closing .form-padding {
   padding: 15px !important;
@@ -741,14 +747,17 @@ button {
   border-top: 1px solid #f1f1f1 !important;
   display: flex;
   justify-content: end;
-  padding: 20px !important;
+  padding: 15px 0px 0px 0px !important;
   background-color: #fff;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
-  margin-top: 0px !important;
+  margin-top: 10px !important;
+}
+.cleanslate .modal-prevent-closing label {
+  font-size: 13px !important;
 }
 .cleanslate .modal-prevent-closing .heading-font {
-  font-size: 15px !important;
+  font-size: 14px !important;
   font-weight: 500 !important;
 }
 .cleanslate .modal-prevent-closing .modal-cross-icon {
@@ -785,7 +794,6 @@ button {
   color: #fff;
   padding: 8px 12px !important;
   border-radius: 4px;
-  margin-right: 10px;
 }
 .cleanslate .ql-snow .ql-tooltip {
   border: 1px solid #ccc !important;
@@ -794,7 +802,7 @@ button {
   border-radius: 4px;
 }
 .mobile-chat-widget.cleanslate .ninjachat .mobile-footer {
-  position: fixed;
+  position: absolute;
   bottom: 0px;
 }
 .mobile-chat-widget.cleanslate .ninjachat-footer-section .ql-editor {
@@ -922,9 +930,9 @@ button {
   top: unset !important;
   font-weight: normal !important;
 }
-.cleanslate .ninjachat .ql-editor p {
+.cleanslate .ninjachat .ql-editor .ptag {
   font-size: 13px !important;
-  margin-left: 13px !important;
+  margin: 0px 4px 0px 13px !important;
 }
 .cleanslate .ninjachat-chat .ninjachat-footer-500app {
   border-top: 1px solid #efeff1 !important;
@@ -953,7 +961,7 @@ button {
 .cleanslate .ninjachat-chat .ninjachat pre {
   font-family: inherit !important;
   font-size: 13px !important;
-  word-break: break-all !important;
+  word-break: break-word !important;
 }
 .cleanslate .infinity-chat-icon .ninjachat-icon {
   right: 75px !important;
@@ -980,6 +988,23 @@ button {
   justify-content: center;
   text-align: center;
   user-select: none;
-  background-color: rgb(3, 169, 244);
+  background-color: #1155cc;
   color: rgb(255 255 255);
+}
+
+.cleanslate .ninjachat-mail-option {
+  background: #f7f7fb !important;
+  display: inline-block !important;
+  width: 100% !important;
+  border-bottom: 0.5px solid #e9e9f1 !important;
+  padding: 5px 0px !important;
+}
+.cleanslate .ninjachat-option {
+  text-align: right;
+  margin-right: 10px !important;
+  font-size: 11px !important;
+  color: #1155cc !important;
+}
+.cleanslate .ninjachat-option:hover {
+  color: #005ffb !important;
 }

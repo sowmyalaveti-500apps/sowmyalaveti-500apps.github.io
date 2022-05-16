@@ -252,7 +252,7 @@ button {
   word-break: break-word !important;
   font-size: 13px !important;
 }
-.cleanslate .message-text.text-break .ptag {
+.cleanslate .message-text.text-break .ptag .strong {
   word-break: break-word !important;
   font-size: 13px !important;
   word-spacing: normal !important;

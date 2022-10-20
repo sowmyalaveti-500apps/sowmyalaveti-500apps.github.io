@@ -77,7 +77,6 @@
 .botup-ultra mark,
 .botup-ultra audio,
 .botup-ultra video {
-  margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   outline: 0 !important;
@@ -314,6 +313,7 @@
 }
 .botup-ultra .rounded-avatar {
   border-radius: 50% !important;
+  margin-left: 2px;
 }
 .botup-ultra .botupchat-bg-chat-ultra .mcq-video-link {
   word-break: break-all !important;

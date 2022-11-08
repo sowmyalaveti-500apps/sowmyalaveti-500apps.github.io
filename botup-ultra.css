@@ -273,6 +273,7 @@
   text-align: center !important;
   padding: 12px 20px !important;
   border-radius: 20px 20px 20px 0px !important;
+  width: fit-content !important;
 }
 .botup-ultra .faq-margin-zero {
   margin-bottom: 8px !important;

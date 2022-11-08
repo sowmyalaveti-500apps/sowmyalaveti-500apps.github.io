@@ -314,6 +314,7 @@
 .botup-ultra .rounded-avatar {
   border-radius: 50% !important;
   margin-left: 2px;
+  width: 24px !important
 }
 .botup-ultra .botupchat-bg-chat-ultra .mcq-video-link {
   word-break: break-all !important;

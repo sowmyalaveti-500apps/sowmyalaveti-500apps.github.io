@@ -1,42 +1,42 @@
 <script type="text/javascript">
-  async function botupPreviewKey(event) {
-      if (event.keyCode == 13)
-          execute()
-  }
-  function execute() {
-      let url = document.getElementById("botupPreviewInput").value;
-      if (!url) {
-          document.getElementById('botupError').classList.remove('d-none');
-          setTimeout(() => {
-              document.getElementById('botupError').classList.add('d-none');
-          }, 2000);
-          return;
-      }
-      var pattern = /^(http(s|):\/\/)((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?|[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+.+$/;
+    const botupPreviewKey = async (event) =>  {
+        if (event.keyCode == 13)
+            execute()
+    }
+    const execute = () => {
+        let url = document.getElementById("botupPreviewInput").value;
+        if (!url) {
+            document.getElementById('botupError').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('botupError').classList.add('d-none');
+            }, 2000);
+            return;
+        }
+        var pattern = /^(http(s|):\/\/)((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?|[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+.+$/;
 
 
-      console.log('testing')
-      if (!pattern.test(url) || url.slice(-1) == ".") {
-          document.getElementById('botupError').classList.remove('d-none');
-          setTimeout(() => {
-              document.getElementById('botupError').classList.add('d-none');
-          }, 2000);
-          return;
-      };
-      try {
-          var domain = new URL(url).host;
-          if (domain.split(".").length >= 3) {
-              var search = domain.split(".");
-              domain = search.slice(1).join(".");
-          }
-      } catch (e) {
-          domain = url;
-          if (domain.split(".").length >= 3) {
-              search = domain.split(".");
-              domain = search.slice(1).join(".");
-          }
-      }
-      //console.log('iframe domain')
-      window.open(`${window.location.origin}/botup-preview?url=${encodeURI(domain)}&widget_code=MzQxMjU0OTkwNjc5OTQwNC01MjUtZGV2&app_name=botup`);
-  }
+        console.log('testing')
+        if (!pattern.test(url) || url.slice(-1) == ".") {
+            document.getElementById('botupError').classList.remove('d-none');
+            setTimeout(() => {
+                document.getElementById('botupError').classList.add('d-none');
+            }, 2000);
+            return;
+        };
+        try {
+            var domain = new URL(url).host;
+            if (domain.split(".").length >= 3) {
+                var search = domain.split(".");
+                domain = search.slice(1).join(".");
+            }
+        } catch (e) {
+            domain = url;
+            if (domain.split(".").length >= 3) {
+                search = domain.split(".");
+                domain = search.slice(1).join(".");
+            }
+        }
+        //console.log('iframe domain')
+        window.open(`${window.location.origin}/botup-preview?url=${encodeURI(domain)}&widget_code=MzQxMjU0OTkwNjc5OTQwNC01MjUtZGV2&app_name=botup`);
+    }
 </script>

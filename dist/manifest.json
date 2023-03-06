@@ -1,0 +1,60 @@
+{
+  "name": "Stark ai-Job Seeker",
+  "description": "Find & apply jobs addresses in seconds and connect with companies that matches most to your profile.",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "content_security_policy": {
+    "extension_page": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  },
+  "icons": {
+    "48": "icons/finder48.png",
+    "128": "icons/finder128.png"
+  },
+  "action": {
+    "default_title": "Start ai-Job Seeker",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "declarativeContent",
+    "downloads",
+    "cookies",
+    "notifications",
+    "tabs",
+    "contentSettings",
+    "scripting"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "/cs/script.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>",
+        "https://*.500apps.com/*",
+        "*://infinity.500apps.com/*",
+        "*://localhost/*"
+      ],
+      "js": [
+        "/cs/script.js"
+      ],
+      "css": [
+        "/cs/style.css"
+      ]
+    }
+  ]
+}

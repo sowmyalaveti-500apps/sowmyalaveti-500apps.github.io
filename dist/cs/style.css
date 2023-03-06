@@ -1,0 +1,51 @@
+.apps500_hidden {
+  display: none;
+}
+
+.apps500_show {
+  display: inline;
+}
+
+#apps500_extension {
+  display: none;
+}
+
+iframe {
+  width: 100vw;
+}
+
+.tooltiptext .tooltip-hover-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltiptext .tooltip-hover-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltiptext:hover .tooltip-hover-text {
+  visibility: visible;
+  opacity: 0;
+}
+/* .500apps-verify-result::first-letter {
+  text-transform: capitalize;
+} */
